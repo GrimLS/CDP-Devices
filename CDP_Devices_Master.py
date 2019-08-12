@@ -101,18 +101,25 @@ else:
     CSVOutDir = (mainpath + "\CDP Device CSV Files")
 
     #change working dir to Readpath, creating if non-existant
-    os.chdir(ReadPath)
+    try:
+        os.chdir(ReadPath)
+    except:
+        print("Outputs directory not found within working dir. Generating...")
+        os.mkdir(ReadPath)
+        os.chdir(ReadPath)
     if not os.path.abspath(CSVOutDir):
         os.mkdir(CSVOutDir)
 
     #change working dir to output folder, loop through files and generate csv outputs.
-    os.chdir(CSVOutDir)
+
     #os.chdir(mainpath)
     for file in os.listdir(ReadPath):
         if "s.CDPMasterListFilter.s" in file:
-            print(file)
+            print("Writing output from", file, "to csv file.")
+            os.chdir(ReadPath)
             cdp_output = isolate_cdp_output(file)
             device_dict = create_device_dict(cdp_output)
-            write_to_csv(file + ".csv", device_dict)
+            os.chdir(CSVOutDir)
+            write_to_csv(file , device_dict)
 
     #Done
