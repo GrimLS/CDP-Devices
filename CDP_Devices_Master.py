@@ -23,7 +23,6 @@ def isolate_cdp_output(filename):
         for index, line in enumerate(lines):
             #print(index+" "+line)
             if "#sh cdp neigh det | in ID|IP address:|face:|form:" in line:
-            #if "#sh cdp neigh det" in line:
                 #print("Index:", index, "Line:", line)
                 start = index + 1
             if "#" in line and start < index and start > 0:
@@ -98,15 +97,17 @@ def write_to_csv(filename, dict):
 
         if count is 0:
             writer.writeheader()
-
+        count = 0
         for k, v in device_dict.items():
             #print("device dict items count is "+str(count))
+
             for i in v:
                 if "\n" in i:
                     print("There is a newline in this line: ", v)
-            if i > 0:
+            if count != 0:
                     writer.writerow({fieldnames[0]: k, fieldnames[1]: v[0], fieldnames[2]: v[1], fieldnames[3]: v[3],
                                      fieldnames[4]: v[4], fieldnames[5]: v[2]})
+            count += 1
         return str(os.path)
 
 if __name__ == '__main__':
@@ -117,6 +118,7 @@ if __name__ == '__main__':
     else:
         #set base path, assuming a working 'expuxp' folder with Outputs sub folder of files for reading in files
         mainpath = os.getcwd()
+
         ReadPath = mainpath + "\Outputs"
 
         for file in os.listdir(ReadPath):
